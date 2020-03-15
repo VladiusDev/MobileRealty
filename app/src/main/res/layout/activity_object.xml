@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:elevation="1dp"
+    android:layout_height="65dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_object"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="3dp"
+        app:cardElevation="1dp"
+        app:cardCornerRadius="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+         <TextView
+             android:id="@+id/tv_objectName_list"
+             android:textColor="@color/colorPrimaryDark"
+             android:layout_marginLeft="5dp"
+             android:gravity="top"
+             android:textSize="12dp"
+             android:textStyle="normal"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:fontFamily="@font/rubik_light"
+             android:text="Академия Корпус 1. 101"></TextView>
+
+        <TextView
+             android:id="@+id/tv_objectAmount_list"
+             android:fontFamily="@font/rubik_light"
+             android:textColor="@android:color/black"
+             android:layout_marginLeft="5dp"
+             android:gravity="fill"
+             android:drawableLeft="@drawable/outline_attach_money_black_18"
+             android:paddingTop="2dp"
+             android:textSize="11dp"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:text="3.500.000"></TextView>
+
+        <TextView
+            android:id="@+id/tv_objectSquare_list"
+            android:fontFamily="@font/rubik_light"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="5dp"
+            android:drawableLeft="@drawable/outline_square_foot_black_18"
+            android:gravity="fill"
+            android:paddingTop="38dp"
+            android:textSize="11dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="47.50 кв. м."></TextView>
+
+        <TextView
+            android:id="@+id/txt_object_action"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_gravity="right"
+            android:text="&#8942;"
+            android:textAppearance="?android:textAppearanceLarge">
+        </TextView>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
