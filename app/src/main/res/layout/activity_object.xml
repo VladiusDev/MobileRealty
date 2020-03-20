@@ -1,71 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/object_card_cardView"
     android:layout_width="match_parent"
-    android:elevation="1dp"
-    android:layout_height="65dp">
+    android:layout_height="55dp"
+    android:layout_margin="3dp"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="3dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_object"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_margin="3dp"
-        app:cardElevation="1dp"
-        app:cardCornerRadius="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-         <TextView
-             android:id="@+id/tv_objectName_list"
-             android:textColor="@color/colorPrimaryDark"
-             android:layout_marginLeft="5dp"
-             android:gravity="top"
-             android:textSize="12dp"
-             android:textStyle="normal"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:fontFamily="@font/rubik_light"
-             android:text="Академия Корпус 1. 101"></TextView>
+        android:layout_height="match_parent">
 
         <TextView
-             android:id="@+id/tv_objectAmount_list"
-             android:fontFamily="@font/rubik_light"
-             android:textColor="@android:color/black"
-             android:layout_marginLeft="5dp"
-             android:gravity="fill"
-             android:drawableLeft="@drawable/outline_attach_money_black_18"
-             android:paddingTop="2dp"
-             android:textSize="11dp"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:text="3.500.000"></TextView>
-
-        <TextView
-            android:id="@+id/tv_objectSquare_list"
-            android:fontFamily="@font/rubik_light"
-            android:textColor="@android:color/black"
+            android:id="@+id/object_card_txt_name"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:drawableLeft="@drawable/outline_square_foot_black_18"
-            android:gravity="fill"
-            android:paddingTop="38dp"
-            android:textSize="11dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="47.50 кв. м."></TextView>
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12dp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/object_card_img_square"
+            app:layout_constraintEnd_toStartOf="@+id/space"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Академия Корпус 1, 101"></TextView>
 
         <TextView
-            android:id="@+id/txt_object_action"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_gravity="right"
+            android:id="@+id/object_card_txt_status"
+            android:layout_width="100dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="5dp"
+            android:maxWidth="120dp"
+            android:background="@drawable/object_status_free"
+            android:gravity="center"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/object_card_action"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Открыт в продажу"></TextView>
+
+        <TextView
+            android:id="@+id/object_card_action"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
             android:text="&#8942;"
-            android:textAppearance="?android:textAppearanceLarge">
-        </TextView>
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textSize="20dp"
+            android:layout_marginRight="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></TextView>
 
-    </androidx.cardview.widget.CardView>
+        <ImageView
+            android:id="@+id/object_card_img_square"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ic_square_foot_24px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/object_card_txt_name"></ImageView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/object_card_txt_square"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/rubik_light"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/object_card_img_square"
+            app:layout_constraintTop_toTopOf="@+id/object_card_txt_cost"
+            tools:text="35.00 кв. м."></TextView>
+
+        <ImageView
+            android:id="@+id/object_card_img_cost"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/ic_ruble_currency_sign"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/object_card_txt_square"
+            app:layout_constraintTop_toTopOf="@+id/object_card_txt_square"></ImageView>
+
+        <TextView
+            android:id="@+id/object_card_txt_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/object_card_img_cost"
+            tools:text="85.000"></TextView>
+
+        <Space
+            android:id="@+id/space"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/object_card_txt_status"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

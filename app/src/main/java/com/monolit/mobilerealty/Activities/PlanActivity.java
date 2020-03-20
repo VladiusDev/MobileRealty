@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty.Activityes;
+package com.monolit.mobilerealty.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;

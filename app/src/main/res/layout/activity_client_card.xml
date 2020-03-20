@@ -3,7 +3,160 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity_client_card">
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/object_card_separate"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/task_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_name"></View>
+
+    <TextView
+        android:id="@+id/client_name"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/object_card_separate"
+        app:layout_constraintStart_toStartOf="@+id/object_card_separate"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Иванов Иван Иванович"></TextView>
+
+    <TextView
+        android:id="@+id/client_card_txt_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="font"
+        android:text="@string/client_card_phone"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/object_card_separate"></TextView>
+
+    <TextView
+        android:id="@+id/client_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/card_value"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/client_card_txt_phone"
+        app:layout_constraintTop_toBottomOf="@+id/client_card_txt_phone"
+        tools:text="+7-978-123-45-67"></TextView>
+
+    <TextView
+        android:id="@+id/client_card_txt_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="font"
+        android:text="@string/client_card_email"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_phone"></TextView>
+
+    <TextView
+        android:id="@+id/client_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:textAlignment="textStart"
+        android:textColor="@color/card_value"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/client_card_txt_email"
+        app:layout_constraintTop_toBottomOf="@+id/client_card_txt_email"
+        tools:text="natashasaulova@mail.ru"></TextView>
+
+    <TextView
+        android:id="@+id/client_card_txt_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="font"
+        android:text="@string/client_card_address"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_email"></TextView>
+
+    <TextView
+        android:id="@+id/client_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/card_value"
+        android:textSize="14dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/client_card_txt_address"
+        app:layout_constraintTop_toBottomOf="@+id/client_card_txt_address"
+        tools:text="Республика Крым, Бахчисарайский район, с. Брянское, ул. Альминская, д."></TextView>
+
+    <TextView
+        android:id="@+id/client_card_txt_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="font"
+        android:text="@string/client_card_manager"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/client_card_txt_address"
+        app:layout_constraintTop_toBottomOf="@+id/client_address"></TextView>
+
+    <TextView
+        android:id="@+id/client_manager"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/card_value"
+        android:layout_marginRight="10dp"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/client_card_txt_manager"
+        app:layout_constraintTop_toBottomOf="@+id/client_card_txt_manager"
+        tools:text="Шапошникова Марина Ивановна"></TextView>
+
+    <Button
+        android:id="@+id/client_btn_close"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/button_close"
+        android:text="@string/object_card_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_manager"></Button>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_btn_close"></View>
+
+    <Space
+        android:id="@+id/space4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/client_btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

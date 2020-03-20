@@ -1,6 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/task_card_txt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/rubik_light"
+        android:gravity="center_vertical"
+        android:text="10.04.2019 14:24:34"
+        android:textColor="@color/task_date"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="1dp"
+        android:typeface="normal"
+        app:layout_constraintStart_toEndOf="@+id/task_card_img_date"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/task_card_txt_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:fontFamily="@font/rubik_light"
+        android:gravity="center_vertical"
+        android:text="10.04.2019 14:24:34"
+        android:textColor="@color/task_date"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="10dp"
+        android:typeface="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10.04.2019 14:24:34" />
+
+    <ImageView
+        android:id="@+id/task_card_img_deadline"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/ic_access_alarm_24px"
+        app:layout_constraintBottom_toBottomOf="@+id/task_card_txt_deadline"
+        app:layout_constraintEnd_toStartOf="@+id/task_card_txt_deadline"
+        app:layout_constraintTop_toTopOf="@+id/task_card_txt_deadline"></ImageView>
+
+    <ImageView
+        android:id="@+id/task_card_img_date"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_access_time_24px"
+        app:layout_constraintBottom_toBottomOf="@+id/task_card_txt_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/task_card_txt_date"></ImageView>
+
+    <TextView
+        android:id="@+id/task_card_txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/task_title_shape"
+        android:text="Интересовался двушкой в Чернике"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_txt_date"></TextView>
+
+    <TextView
+        android:id="@+id/task_card_txt_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_separate"></TextView>
+
+    <View
+        android:id="@+id/task_card_separate"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/task_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_txt_title"></View>
+
+    <Button
+        android:id="@+id/task_card_btn_confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/task_confirm"
+        android:text="@string/task_confirm"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/task_card_space"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_edt_result" />
+
+    <Button
+        android:id="@+id/task_card_btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/button_close"
+        android:text="@string/task_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/task_card_space"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_edt_result" />
+
+    <Space
+        android:id="@+id/task_card_space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_txt_title" />
+
+
+    <ImageView
+        android:id="@+id/task_card__img_author"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_face_24px"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/task_card_txt_author"
+        app:layout_constraintRight_toLeftOf="@id/task_card_txt_author"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/task_card_txt_author"></ImageView>
+
+    <TextView
+        android:id="@+id/task_card_txt_author"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/rubik_light"
+        android:gravity="center_vertical"
+        android:text="Охотников Владислав"
+        android:textColor="@android:color/black"
+        android:textSize="14dp"
+        app:layout_constraintStart_toEndOf="@+id/task_card__img_author"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_txt_description"></TextView>
+
+    <EditText
+        android:id="@+id/task_card_edt_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/rubik_light"
+        android:textSize="14dp"
+        android:hint="Результат выполнения..."
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_card_txt_author" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

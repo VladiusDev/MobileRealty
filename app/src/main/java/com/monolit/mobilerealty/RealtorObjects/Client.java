@@ -1,23 +1,33 @@
-package com.monolit.mobilerealty.Model;
+package com.monolit.mobilerealty.RealtorObjects;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "clients")
 public class Client {
 
+    @PrimaryKey
+    @NonNull
+    private String id1c;
     private String name;
     private String phone;
     private String email;
     private String address;
     private String manager;
-    private String id;
-    private String id1C;
 
-    public Client(String name, String phone, String email, String address, String manager, String id, String id1C) {
+    public Client(String name, String phone, String email, String address, String manager, String id1c) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.manager = manager;
-        this.id1C = id1C;
-        this.id = id;
+        this.id1c = id1c;
+    }
+
+    @NonNull
+    public String getId1c() {
+        return id1c;
     }
 
     public String getName() {
@@ -40,11 +50,27 @@ public class Client {
         return manager;
     }
 
-    public String getId() {
-        return id;
+    public void setId1c(@NonNull String id1c) {
+        this.id1c = id1c;
     }
 
-    public String getId1C() {
-        return id1C;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
     }
 }

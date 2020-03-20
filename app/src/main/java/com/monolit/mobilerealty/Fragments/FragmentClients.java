@@ -4,12 +4,9 @@ package com.monolit.mobilerealty.Fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,8 +35,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.monolit.mobilerealty.Adapters.ClientsListAdapter;
-import com.monolit.mobilerealty.DataBase.RealtyDataBase;
-import com.monolit.mobilerealty.Dialog.DialogAlerts;
+import com.monolit.mobilerealty.Room.ViewModel.ClientsViewModel;
+import com.monolit.mobilerealty.AlertDialog.DialogFactory;
 import com.monolit.mobilerealty.Interfaces.Constants;
 import com.monolit.mobilerealty.JsonUtils.JsonParser1C;
 import com.monolit.mobilerealty.RealtorObjects.Client;
@@ -50,20 +48,20 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 
 public class FragmentClients extends Fragment{
 
-    private ArrayList<Client> clients = new ArrayList<>();
+    private static final int LIMIT_COUNT = 50;
+
     private RecyclerView mRecyclerViewClients;
     private SwipeRefreshLayout mSwipeRefresh;
     private ClientsListAdapter mClientsListAdapter;
     private ProgressDialog progressDialog;
-    private RealtyDataBase.DataBaseHelper databaseHelper;
-    private SQLiteDatabase database;
     private SharedPreferences preferences;
     private TextView txt_clientsList_update_data;
     private ConstraintLayout clientslist_constraintLayout;
@@ -78,9 +76,17 @@ public class FragmentClients extends Fragment{
     private TextView client_address;
     private TextView client_manager;
     private Button client_btn_close;
+    private int rowCount;
+    private ClientsViewModel clientsViewModel;
+    private List<Client> clients;
 
     public FragmentClients() {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -88,13 +94,22 @@ public class FragmentClients extends Fragment{
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        setRetainInstance(false);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getContext().getString(R.string.clientslist_download));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_clients, container, false);
 
+        clientsViewModel = ViewModelProviders.of(this).get(ClientsViewModel.class);
         preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        rowCount = 0;
 
         txt_clientsList_update_data = view.findViewById(R.id.txt_clientsList_update_data);
         clientslist_constraintLayout = view.findViewById(R.id.clientslist_constraintLayout);
@@ -104,15 +119,9 @@ public class FragmentClients extends Fragment{
         clientslist_btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.setMessage(getContext().getString(R.string.clientslist_download));
-                progressDialog.show();
-
-                downloadDataToDB();
+                downloadDataToDB(false);
             }
         });
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
 
         mRecyclerViewClients = view.findViewById(R.id.rw_clientList);
         mSwipeRefresh = view.findViewById(R.id.swipe_container_client_list);
@@ -123,15 +132,30 @@ public class FragmentClients extends Fragment{
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                downloadDataToDB();
+                downloadDataToDB(true);
             }
         });
 
-        mClientsListAdapter  = new ClientsListAdapter(clients);
+        mClientsListAdapter  = new ClientsListAdapter();
+        mClientsListAdapter.setOnReachEndListener(new ClientsListAdapter.OnReachEndListener() {
+            @Override
+            public void onReachEnd() {
+                rowCount = rowCount + 100;
+
+                List<Client> oldClients = mClientsListAdapter.getClients();
+                List<Client> newClients = clientsViewModel.getAllClients(rowCount);
+
+                oldClients.addAll(newClients);
+
+                mClientsListAdapter.setClients(oldClients);
+
+                adapterNotifyDataSetChanged();
+            }
+        });
         mClientsListAdapter.setOnClickClientListener(new ClientsListAdapter.OnClickClientListener() {
             @Override
             public void OnClickClient(int position) {
-                Client client = clients.get(position);
+                Client client = mClientsListAdapter.getClients().get(position);
 
                 if (client != null){
                     viewCard = LayoutInflater.from(getContext()).inflate(R.layout.activity_client_card, null);
@@ -157,7 +181,7 @@ public class FragmentClients extends Fragment{
                             if (!phoneNumber.isEmpty()) {
                                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                                     if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE)) {
-                                        DialogAlerts.showDialogAccessToGallery(getActivity());
+                                        DialogFactory.showDialogAccessToGallery(getActivity());
                                     } else {
                                         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, 202);
                                     }
@@ -219,197 +243,140 @@ public class FragmentClients extends Fragment{
         mRecyclerViewClients.setLayoutManager(new LinearLayoutManager(view.getContext()));
         mRecyclerViewClients.setAdapter(mClientsListAdapter);
 
-        fillRecyclerView();
+        clients = clientsViewModel.getClients();
+
+        mClientsListAdapter.setClients(clients);
+
+        adapterNotifyDataSetChanged();
+
+        checkEmptyState();
+
+        if (preferences.contains("clientsList_update_data")){
+            txt_clientsList_update_data.setText(getString(R.string.objectList_lastUpdate) + " " + preferences.getString("clientsList_update_data", ""));
+        }
 
         return view;
     }
 
-    class GetClientsTak extends AsyncTask<Void, Void, String> implements Constants {
+    class InsertDataToDB extends AsyncTask<String, Void, Void>{
 
         @Override
-        protected String doInBackground(Void... voids) {
-            return WebService1C.sendRequest(SERVER_SOAP_METHOD_GET_CLIENTS, getContext());
+        protected void onPostExecute(Void aVoid) {
+            mSwipeRefresh.setRefreshing(false);
+            progressDialog.dismiss();
+
+            checkEmptyState();
+
+            Date currentDate = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+
+            preferences.edit().putString("clientsList_update_data", dateFormat.format(currentDate)).apply();
+
+            if (preferences.contains("clientsList_update_data")){
+                txt_clientsList_update_data.setText(getString(R.string.objectList_lastUpdate) + " " + preferences.getString("clientsList_update_data", ""));
+            }
+
+            super.onPostExecute(aVoid);
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                if (!result.isEmpty()) {
+        protected Void doInBackground(String... strings) {
+            if (strings[0] != null) {
+                if (!strings[0].isEmpty()) {
                     JSONObject jsonObject = null;
                     Boolean executeResult = false;
 
                     try {
-                        jsonObject = new JSONObject(result);
+                        jsonObject = new JSONObject(strings[0] );
                     } catch (JSONException e) {
-                        DialogAlerts.showAlertDialog(getContext(), e.toString(), getContext().getString(R.string.error));
-                    }finally {
-                        progressDialog.dismiss();
                     }
 
                     if (jsonObject != null) {
                         try {
                             executeResult = jsonObject.getBoolean("result");
                         } catch (JSONException e) {
-                            DialogAlerts.showAlertDialog(getContext(), e.toString(), getContext().getString(R.string.error));
-                        }finally {
-                            progressDialog.dismiss();
                         }
 
                         if (executeResult == true) {
+                            String stringData = null;
+
                             try {
-                                String stringData = jsonObject.getString("data");
-                                JSONObject jsonData = new JSONObject(stringData);
-
-                                // Get data from 1C
-                                ArrayList<ContentValues> arrayListClients = JsonParser1C.getClients(jsonData.toString());
-
-                                // Init database helper
-                                databaseHelper = new RealtyDataBase.DataBaseHelper(getContext());
-                                database = databaseHelper.getWritableDatabase();
-
-                                // Fill database
-                                try {
-                                    // Fill table
-                                    for (ContentValues mValue : arrayListClients) {
-                                        String id1C = mValue.get("id1C").toString();
-                                        String[] args = new String[] {id1C};
-
-                                        database.delete(RealtyDataBase.DataBaseEntry.CLIENTS_TABLE_NAME, RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_ID1C + " = ?", new String[] { id1C });
-                                        database.insert(RealtyDataBase.DataBaseEntry.CLIENTS_TABLE_NAME, null, mValue);
-                                    }
-
-                                    // Set last update data
-                                    Date currentDate = new Date();
-                                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
-
-                                    preferences.edit().putString("clientsList_update_data", dateFormat.format(currentDate)).apply();
-
-                                    txt_clientsList_update_data.setText(getString(R.string.objectList_lastUpdate) + " " + dateFormat.format(currentDate));
-                                } finally {
-                                    // Close DB
-                                    database.close();
-
-                                    // Fill RW
-                                    fillRecyclerView();
-
-                                    // Dismiss progress bar
-                                    progressDialog.dismiss();
-                                }
+                                stringData = jsonObject.getString("data");
                             } catch (JSONException e) {
-                                DialogAlerts.showAlertDialog(getContext(), e.toString(), getContext().getString(R.string.error));
-                            }finally {
-                                progressDialog.dismiss();
+                                return null;
                             }
-                        } else {
+
+                            JSONObject jsonData = null;
                             try {
-                                String executeMessage = jsonObject.getString("message");
-
-                                DialogAlerts.showAlertDialog(getContext(), executeMessage, getContext().getString(R.string.error));
+                                jsonData = new JSONObject(stringData);
                             } catch (JSONException e) {
-                                DialogAlerts.showAlertDialog(getContext(), e.toString(), getContext().getString(R.string.error));
-                            }finally {
-                                progressDialog.dismiss();
+                                return null;
                             }
+
+                            // Get data from 1C
+                            List<Client> newClients = JsonParser1C.getClients(jsonData.toString());
+
+                            // Fill database
+                            clientsViewModel.insertAllClients(newClients);
+
+                            clients.addAll(newClients);
+
+                            mClientsListAdapter.setClients(clients);
+                            adapterNotifyDataSetChanged();
                         }
-                    } else {
-                        DialogAlerts.showAlertDialog(getContext(), getContext().getString(R.string.error_work_server), getContext().getString(R.string.error));
-
-                        progressDialog.dismiss();
                     }
-                }else{
-                    DialogAlerts.showAlertDialog(getContext(), getContext().getString(R.string.error_work_server), getContext().getString(R.string.error));
-
-                    progressDialog.dismiss();
                 }
-            }else{
-                DialogAlerts.showAlertDialog(getContext(), getContext().getString(R.string.error_work_server), getContext().getString(R.string.error));
-
-                progressDialog.dismiss();
             }
-        }
 
+            return null;
+        }
     }
 
-    private void downloadDataToDB(){
-        GetClientsTak getClientsTak = new GetClientsTak();
+    class GetClientsTak extends AsyncTask<Void, Void, String> implements Constants {
+
+        String fullDownload;
+        Boolean itsSwipe;
+
+        public GetClientsTak(String fullDownload, Boolean itsSwipe) {
+            this.fullDownload = fullDownload;
+            this.itsSwipe = itsSwipe;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if (itsSwipe == false) {
+                progressDialog.show();
+            }
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            HashMap<String, String> args = new HashMap<>();
+            args.put("fullDownload", fullDownload);
+
+            return WebService1C.sendRequest(SERVER_SOAP_METHOD_GET_CLIENTS, getContext(), args);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            InsertDataToDB insertDataToDB = new InsertDataToDB();
+            insertDataToDB.execute(result);
+        }
+    }
+
+    private void downloadDataToDB(Boolean itsSwipe){
+        String fullDownload = "0";
+        if (mClientsListAdapter.getItemCount() == 0){
+            fullDownload = "1";
+        }
+
+        GetClientsTak getClientsTak = new GetClientsTak(fullDownload, itsSwipe);
         getClientsTak.execute();
     }
 
-    private void fillRecyclerView(){
-        fillRecyclerViewData(null);
-    }
-
-    private void fillRecyclerView(String filter){
-        fillRecyclerViewData(filter);
-    }
-
-    private void fillRecyclerViewData(String filter){
-        Cursor cursor = null;
-        String[] params = null;
-        Boolean searchUsing = false;
-
-        if (filter != null){
-            searchUsing = true;
-        }
-
-        // Clear array list
-        clients.clear();
-
-        // Fill array list data from DB
-        if (databaseHelper == null){
-            databaseHelper = new RealtyDataBase.DataBaseHelper(getContext());
-        }
-
-        database = databaseHelper.getReadableDatabase();
-
-        // First selection by name
-        cursor = database.rawQuery(RealtyDataBase.DataBaseEntry.CLIENTS_QUERY, null);
-
-        if (filter != null) {
-            if (!filter.isEmpty()) {
-                params = new String[2];
-                params[0] = "%" + filter + "%";
-                params[1] = "%" + filter + "%";
-
-                cursor = database.rawQuery(RealtyDataBase.DataBaseEntry.CLIENTS_QUERY_FILTER, params);
-            }
-        }
-
-        while (cursor.moveToNext()){
-            addClientToArrayList(cursor);
-        }
-
-        cursor.close();
-        database.close();
-
-        // Fill recycler view
-        mClientsListAdapter.clients = clients;
-        mClientsListAdapter.notifyDataSetChanged();
-
-        mSwipeRefresh.setRefreshing(false);
-        progressDialog.dismiss();
-
-        // Show last data update
-        if (preferences.contains("clientsList_update_data")){
-            txt_clientsList_update_data.setText(getString(R.string.objectList_lastUpdate) + " " + preferences.getString("clientsList_update_data", ""));
-        }
-
-        checkEmptyState(searchUsing);
-    }
-
-    private void addClientToArrayList(Cursor cursor){
-        String name = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_NAME));
-        String phone = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_PHONE));
-        String email = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_EMAIL));
-        String address = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_ADDRESS));
-        String manager = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_MANAGER));
-        String id = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry._ID));
-        String id1C = cursor.getString(cursor.getColumnIndex(RealtyDataBase.DataBaseEntry.CLIENTS_COLUMN_ID1C));
-
-        clients.add(new Client(name, phone, email, address, manager, id, id1C));
-    }
-
-    private void checkEmptyState(Boolean searchUsing) {
+    private void checkEmptyState() {
         if (clients.size() == 0) {
             clientslist_constraintLayout.setBackgroundColor(getContext().getColor(R.color.colorWhite));
 
@@ -420,11 +387,6 @@ public class FragmentClients extends Fragment{
             txt_clientsList_update_data.setVisibility(View.INVISIBLE);
 
             mRecyclerViewClients.setVisibility(View.INVISIBLE);
-
-            if (searchUsing) {
-                clientslist_txt_empty.setText(R.string.empty_search);
-                clientslist_btn_update.setVisibility(View.INVISIBLE);
-            }
         }else {
             clientslist_constraintLayout.setBackgroundColor(getContext().getColor(R.color.background));
 
@@ -447,7 +409,7 @@ public class FragmentClients extends Fragment{
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                checkEmptyState(false);
+                checkEmptyState();
 
                 return false;
             }
@@ -461,9 +423,15 @@ public class FragmentClients extends Fragment{
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (!newText.isEmpty()) {
-                    fillRecyclerView(newText);
+                    mClientsListAdapter.setClients(clientsViewModel.getClientsByFilter(newText));
+
+                    adapterNotifyDataSetChanged();
                 }else{
-                    fillRecyclerView();
+                    mClientsListAdapter.setClients(clientsViewModel.getAllClients(0));
+
+                    adapterNotifyDataSetChanged();
+
+                    rowCount = 0;
                 }
 
                 return false;
@@ -472,4 +440,15 @@ public class FragmentClients extends Fragment{
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    void adapterNotifyDataSetChanged(){
+        mRecyclerViewClients.post(new Runnable()
+        {
+            @Override
+            public void run() {
+                mClientsListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
 }

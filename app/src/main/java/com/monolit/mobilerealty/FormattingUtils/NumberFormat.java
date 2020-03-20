@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty.Format;
+package com.monolit.mobilerealty.FormattingUtils;
 
 import java.text.DecimalFormat;
 

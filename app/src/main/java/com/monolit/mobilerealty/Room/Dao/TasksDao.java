@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty.Room;
+package com.monolit.mobilerealty.Room.Dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -15,13 +15,13 @@ public interface TasksDao {
     @Query("SELECT * FROM tasks ORDER BY date DESC")
     List<Task> getAllTasks();
 
-    @Query("SELECT * FROM tasks WHERE title LIKE :title OR author LIKE :author OR date LIKE :date ORDER BY date DESC")
-    List<Task> getTasksByFilter(String title, String author, String date);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertTask(Task task);
+    @Query("SELECT * FROM tasks WHERE title LIKE '%' ||  :title || '%' OR author LIKE '%' ||  :title || '%' OR date LIKE '%' ||  :title || '%' ORDER BY date DESC")
+    List<Task> getTasksByFilter(String title);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTasks(List<Task> tasks);
+
+    @Query("DELETE FROM tasks")
+    void deleteAll();
 
 }

@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty.Room;
+package com.monolit.mobilerealty.Room.Dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -16,14 +16,8 @@ public interface ClientsDao {
     @Query("SELECT * FROM clients ORDER BY name LIMIT 100 OFFSET :offset")
     List<Client> getAllClients(int offset);
 
-    @Query("SELECT * FROM clients WHERE name LIKE :name OR phone LIKE :phone OR email LIKE :email ORDER BY name")
-    List<Client> getClientsByFilter(String name, String phone, String email);
-
-    @Query("SELECT * FROM clients WHERE id1c == :id")
-    Client getClientId(String id);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertClient(Client client);
+    @Query("SELECT * FROM clients WHERE name LIKE '%' || :name || '%' OR phone LIKE '%' || :name || '%' OR email LIKE '%' || :name || '%' ORDER BY name")
+    List<Client> getClientsByFilter(String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertClients(List<Client> clients);

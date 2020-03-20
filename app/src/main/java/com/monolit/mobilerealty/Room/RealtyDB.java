@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty;
+package com.monolit.mobilerealty.Room;
 
 import android.content.Context;
 
@@ -8,8 +8,14 @@ import androidx.room.RoomDatabase;
 
 import com.monolit.mobilerealty.RealtorObjects.Client;
 import com.monolit.mobilerealty.RealtorObjects.RealtyObject;
+import com.monolit.mobilerealty.RealtorObjects.Reservation;
+import com.monolit.mobilerealty.RealtorObjects.Task;
+import com.monolit.mobilerealty.Room.Dao.ClientsDao;
+import com.monolit.mobilerealty.Room.Dao.RealtyObjectsDao;
+import com.monolit.mobilerealty.Room.Dao.ReservationsDao;
+import com.monolit.mobilerealty.Room.Dao.TasksDao;
 
-@Database(entities = {RealtyObject.class, Client.class}, version = 1, exportSchema = false)
+@Database(entities = {RealtyObject.class, Client.class, Task.class, Reservation.class}, version = 1, exportSchema = false)
 public abstract class RealtyDB extends RoomDatabase {
 
     private static final String DB_NAME = "realty.db";
@@ -29,5 +35,9 @@ public abstract class RealtyDB extends RoomDatabase {
     public abstract RealtyObjectsDao realtyObjectsDao();
 
     public abstract ClientsDao clientsDao();
+
+    public abstract TasksDao tasksDao();
+
+    public abstract ReservationsDao reservationsDao();
 
 }

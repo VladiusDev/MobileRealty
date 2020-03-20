@@ -19,7 +19,7 @@ import com.monolit.mobilerealty.RealtorObjects.Utils.RealtorObjectsUtils;
 
 import org.json.JSONException;
 
-public class ActivityReservation extends AppCompatActivity {
+public class ReservationActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private Button btn_reservation;

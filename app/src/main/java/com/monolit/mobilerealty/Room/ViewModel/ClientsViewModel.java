@@ -1,4 +1,4 @@
-package com.monolit.mobilerealty.Room;
+package com.monolit.mobilerealty.Room.ViewModel;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.monolit.mobilerealty.RealtorObjects.Client;
+import com.monolit.mobilerealty.Room.RealtyDB;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +40,24 @@ public class ClientsViewModel extends AndroidViewModel {
             return null;
         } catch (InterruptedException e) {
             return null;
+        }
+    }
+
+    public List<Client> getClientsByFilter(String name){
+        try {
+            return new GetClientsByFilter().execute(name).get();
+        } catch (ExecutionException e) {
+            return null;
+        } catch (InterruptedException e) {
+            return null;
+        }
+    }
+
+    private class GetClientsByFilter extends AsyncTask<String, Void, List<Client>>{
+
+        @Override
+        protected List<Client> doInBackground(String... strings) {
+            return database.clientsDao().getClientsByFilter(strings[0]);
         }
     }
 
