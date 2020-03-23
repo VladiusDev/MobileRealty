@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_objects"
+        android:icon="@drawable/ic_business_24px"
+        android:title="@string/realty_object" />
+
+    <item
+        android:id="@+id/nav_clients"
+        android:icon="@drawable/ic_group_24px"
+        android:title="@string/clients" />
+
+    <item
+        android:id="@+id/nav_tasks"
+        android:icon="@drawable/ic_event_note_24px"
+        android:title="@string/tasks" />
+
+    <item
+        android:id="@+id/nav_reservations"
+        android:icon="@drawable/ic_verified_user_24px"
+        android:title="@string/reservations" />
+
+</menu>
